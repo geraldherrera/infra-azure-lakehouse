@@ -1,71 +1,84 @@
-# Azure Lakehouse Infrastructure with Terraform
+# 📦 Infrastructure Lakehouse – Déploiement via Terraform
 
-This repository contains the Terraform code to provision the infrastructure for a Lakehouse project on Microsoft Azure.
+Ce dépôt contient l'automatisation complète de l'infrastructure pour un projet de type Lakehouse sur Azure. Le déploiement est basé sur Terraform, avec un script Python de post-déploiement obligatoire pour compléter la configuration du workspace Databricks.
 
-## 🧱 Infrastructure Overview
-This Terraform configuration sets up the following resources:
+## ✅ Fonctionnalités
 
-- Azure Resource Group: `rg-datasource-dev-ghe`
-- Azure SQL Server: `sql-datasource-dev-ghe`
-- Azure SQL Database: `sqldb-adventureworks-dev-ghe`
-- Azure Key Vault: `kv-jdbc-secrets-dev-ghe`
-  - Secrets stored:
-    - `sql-username`
-    - `sql-password`
+- Création de groupes de ressources dédiés
+- Déploiement d'un SQL Server + base de données avec exemple AdventureWorksLT
+- Création d'un Azure Key Vault contenant les identifiants SQL
+- Provisionnement d'un Azure Databricks Workspace avec son managed resource group
+- Génération d'outputs Terraform réutilisables pour automatisation
+- Stockage des notebooks `.dbc` versionnés dans `/notebooks/` :
+  - `1. Initialisation.dbc`
+  - `2. Bronze layer – Ingestion.dbc`
+  - `3. Silver layer – Transformation.dbc`
+  - `4. Gold layer – Aggregation.dbc`
 
-## 🚀 Getting Started
+## 🚀 Déploiement en 3 étapes
 
-### Prerequisites
-- [Terraform](https://developer.hashicorp.com/terraform/downloads)
-- [Azure CLI](https://learn.microsoft.com/en-us/cli/azure/install-azure-cli)
-- An Azure subscription
+### 1. Initialisation et création de l'infrastructure
 
-### Steps
-
-1. Clone the repository:
 ```bash
-git clone https://github.com/ton-utilisateur/infra-azure-lakehouse.git
+git clone https://github.com/geraldherrera/infra-azure-lakehouse.git
 cd infra-azure-lakehouse
 ```
 
-2. Authenticate with Azure:
-```bash
-az login
-az account set --subscription "<your-subscription-id>"
-```
+Créer un fichier `secrets.auto.tfvars` avec les variables sensibles :
 
-3. Create a `secrets.auto.tfvars` file with the following content:
 ```hcl
-subscription_id = "<your-subscription-id>"
-sql_admin       = "<your-admin-name>"
-sql_password    = "<your-password>"
+subscription_id     = "<votre-subscription-id>"
+sql_admin           = "<nom-utilisateur-sql>"
+sql_password        = "<mot-de-passe-sql>"
+databricks_token    = "<token-databricks>"
 ```
-> ⚠️ This file is **ignored by Git** and must not be committed.
 
-4. Initialize and apply Terraform:
+> ⚠️ Ce fichier ne doit **jamais être versionné**. Il est ignoré par `.gitignore`.
+
+Puis lancer l’init et l’application du plan Terraform :
+
 ```bash
 terraform init
-terraform plan
 terraform apply
 ```
 
-## 📁 File Structure
+### 2. Génération manuelle du token Databricks
+
+Après la création du workspace Databricks :
+1. Connectez-vous à l’interface Databricks
+2. Allez dans `User Settings > Access Tokens`
+3. Cliquez sur "Generate New Token"
+4. Copiez ce token dans `secrets.auto.tfvars` sous la clé `databricks_token`
+
+### 3. Lancement du post-déploiement
+
+Un script `post_deploy.py` est requis pour :
+- Importer automatiquement les notebooks `.dbc` dans le workspace Databricks
+- (À venir) créer les jobs et orchestrer le workflow complet
+
+## 📁 Structure du dépôt
+
 ```
 infra-azure-lakehouse/
-├── main.tf               # Terraform resource definitions
-├── variables.tf          # Variables used in the configuration
-├── outputs.tf            # Optional outputs (can be expanded)
-├── .gitignore            # Files to exclude from Git
-└── secrets.auto.tfvars   # Sensitive data (excluded from Git)
+├── main.tf                  # Déploiement de l'infrastructure Azure
+├── variables.tf             # Variables globales
+├── outputs.tf               # Infos utiles extraites après apply
+├── secrets.auto.tfvars      # ⚠️ Fichier local, non versionné
+├── notebooks/               # Notebooks .dbc prêts à importer
+│   ├── 1. Initialisation.dbc
+│   ├── 2. Bronze layer – Ingestion.dbc
+│   ├── 3. Silver layer – Transformation.dbc
+│   └── 4. Gold layer – Aggregation.dbc
+├── post_deploy.py           # Script Python pour automatisation Databricks
+├── README.md                # Ce fichier
 ```
 
-## ✅ To Do (Next Steps)
-- [ ] Add Databricks workspace
-- [ ] Create Databricks cluster
-- [ ] Deploy notebooks and workflows
-- [ ] Automate Unity Catalog and governance setup
-- [ ] Optional CI/CD via GitHub Actions
+## 💬 À venir
+
+- Création d’un cluster et d’une policy "Personal Compute"
+- Intégration d’un workflow Databricks (jobs)
+- Gestion d’un train/test en sandbox ML
 
 ---
 
-Made with ❤️ by Gerald Herrera
+🛠️ Ce projet a été conçu pour minimiser les manipulations manuelles et garantir la reproductibilité du déploiement sur Azure + Databricks. Il peut servir de base à toute architecture de type Lakehouse en environnement académique ou professionnel.
