@@ -13,6 +13,14 @@ output "key_vault_name" {
   value       = azurerm_key_vault.kv.name
 }
 
+output "key_vault_uri" {
+  value = azurerm_key_vault.kv.vault_uri
+}
+
+output "key_vault_id" {
+  value = azurerm_key_vault.kv.id
+}
+
 output "sql_server_name" {
   description = "Nom du serveur SQL"
   value       = azurerm_mssql_server.sql_server.name
