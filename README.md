@@ -30,6 +30,8 @@ Créer un fichier `secrets.auto.tfvars` (non versionné) avec les variables sens
 subscription_id  = "<votre-subscription-id>"
 sql_admin        = "<nom-utilisateur-sql>"
 sql_password     = "<mot-de-passe-sql>"
+aad_admin_login  = "<votre-email@domain.com>"
+aad_admin_object_id = "<object-id-de-votre-utilisateur>"
 ```
 
 Et un fichier `terraform.tfvars` pour les noms de ressources :

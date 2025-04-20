@@ -31,6 +31,17 @@ variable "sql_password" {
   sensitive   = true
 }
 
+# 
+variable "aad_admin_login" {
+  description = "Login UPN de l'administrateur Entra ID"
+  type        = string
+}
+
+variable "aad_admin_object_id" {
+  description = "Object ID Azure AD de l'utilisateur administrateur"
+  type        = string
+}
+
 # Noms de ressources
 variable "rg_datasource_name" {
   description = "Nom du groupe de ressources pour le serveur SQL et Key Vault"

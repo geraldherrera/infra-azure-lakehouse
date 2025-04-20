@@ -29,6 +29,11 @@ resource "azurerm_mssql_server" "sql_server" {
   identity {
     type = "SystemAssigned"
   }
+
+  azuread_administrator {
+    login_username = var.aad_admin_login
+    object_id      = var.aad_admin_object_id
+  }
 }
 
 # SQL Database avec configuration compatible abonnement étudiant
