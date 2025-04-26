@@ -7,19 +7,19 @@ data "azurerm_client_config" "current" {}
 
 # Groupe de ressources pour SQL Server, DB et Key Vault
 resource "azurerm_resource_group" "rg_datasource" {
-  name     = "rg-datasource-dev-ghe"
+  name     = var.rg_datasource_name
   location = var.location_sql
 }
 
 # Groupe de ressources pour Databricks
 resource "azurerm_resource_group" "rg_dataplatform" {
-  name     = "rg-dataplatform-dev-ghe"
+  name     = var.rg_dataplatform_name
   location = var.location
 }
 
 # SQL Server
 resource "azurerm_mssql_server" "sql_server" {
-  name                         = "sql-datasource-dev-ghe"
+  name                         = var.sql_server_name
   resource_group_name          = azurerm_resource_group.rg_datasource.name
   location                     = azurerm_resource_group.rg_datasource.location
   version                      = "12.0"
@@ -29,17 +29,22 @@ resource "azurerm_mssql_server" "sql_server" {
   identity {
     type = "SystemAssigned"
   }
+
+  azuread_administrator {
+    login_username = var.aad_admin_login
+    object_id      = var.aad_admin_object_id
+  }
 }
 
 # SQL Database avec configuration compatible abonnement étudiant
 resource "azurerm_mssql_database" "sql_db" {
-  name                            = "sqldb-adventureworks-dev-ghe"
-  server_id                       = azurerm_mssql_server.sql_server.id
-  sku_name                        = "Basic"
-  max_size_gb                     = 2
-  sample_name                     = "AdventureWorksLT"
-  storage_account_type            = "Local"
-  collation                       = "SQL_Latin1_General_CP1_CI_AS"
+  name                                = var.sql_database_name
+  server_id                           = azurerm_mssql_server.sql_server.id
+  sku_name                            = "Basic"
+  max_size_gb                         = 2
+  sample_name                         = "AdventureWorksLT"
+  storage_account_type                = "Local"
+  collation                           = "SQL_Latin1_General_CP1_CI_AS"
   transparent_data_encryption_enabled = true
 
   tags = {
@@ -49,7 +54,7 @@ resource "azurerm_mssql_database" "sql_db" {
 
 # Azure Key Vault
 resource "azurerm_key_vault" "kv" {
-  name                        = "kv-jdbc-secrets-dev-ghe"
+  name                        = var.key_vault_name
   location                    = azurerm_resource_group.rg_datasource.location
   resource_group_name         = azurerm_resource_group.rg_datasource.name
   tenant_id                   = data.azurerm_client_config.current.tenant_id
@@ -77,10 +82,10 @@ resource "azurerm_key_vault_secret" "sql_password" {
 
 # Databricks Workspace
 resource "azurerm_databricks_workspace" "databricks" {
-  name                          = "dbw-dataplatform-dev-ghe"
+  name                          = var.databricks_workspace_name
   location                      = azurerm_resource_group.rg_dataplatform.location
   resource_group_name           = azurerm_resource_group.rg_dataplatform.name
-  managed_resource_group_name   = "mg-dataplatform-dev-ghe"
+  managed_resource_group_name   = var.databricks_managed_rg_name
   sku                           = "premium"
 
   tags = {
