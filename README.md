@@ -12,7 +12,9 @@ Ce dépôt contient l'automatisation complète de l'infrastructure pour un proje
 - Stockage des notebooks `.dbc` versionnés dans le dossier `/notebooks/` :
   - `1. Initialisation.dbc`
   - `2. Bronze layer – Ingestion.dbc`
+  - `2.5 Bronze layer – Test.dbc`
   - `3. Silver layer – Transformation.dbc`
+  - `3.5 Silver layer – Test.dbc`
   - `4. Gold layer – Aggregation.dbc`
 
 ## 🚀 Déploiement en 3 étapes
@@ -27,10 +29,10 @@ cd infra-azure-lakehouse
 Créer un fichier `secrets.auto.tfvars` (non versionné) avec les variables sensibles :
 
 ```hcl
-subscription_id  = "<votre-subscription-id>"
-sql_admin        = "<nom-utilisateur-sql>"
-sql_password     = "<mot-de-passe-sql>"
-aad_admin_login  = "<votre-email@domain.com>"
+subscription_id     = "<votre-subscription-id>"
+sql_admin           = "<nom-utilisateur-sql>"
+sql_password        = "<mot-de-passe-sql>"
+aad_admin_login     = "<votre-email@domain.com>"
 aad_admin_object_id = "<object-id-de-votre-utilisateur>"
 ```
 
@@ -76,7 +78,7 @@ databricks secrets create-scope \
   --dns-name "https://<nom-vault>.vault.azure.net/"
 ```
 
-> ⚠️ Cette commande est à exécuter **une seule fois**. Elle lie Databricks à votre Key Vault de façon permanente.
+> ⚠️ Cette suite de commande est à exécuter **une seule fois**. Elle lie Databricks à votre Key Vault de façon permanente.
 
 ### 3. Lancement du post-déploiement
 
@@ -104,7 +106,9 @@ infra-azure-lakehouse/
 ├── notebooks/               # Notebooks Databricks (.dbc)
 │   ├── 1. Initialisation.dbc
 │   ├── 2. Bronze layer – Ingestion.dbc
+│   ├── 2.5 Bronze layer – Test.dbc
 │   ├── 3. Silver layer – Transformation.dbc
+│   ├── 3.5 Silver layer – Test.dbc
 │   └── 4. Gold layer – Aggregation.dbc
 ├── post_deploy.py           # Script Python de post-déploiement
 ├── README.md                # Ce fichier
@@ -119,3 +123,7 @@ infra-azure-lakehouse/
 ---
 
 🛠️ Ce projet a été conçu pour minimiser les manipulations manuelles et garantir la reproductibilité du déploiement sur Azure + Databricks. Il peut servir de base à toute architecture de type Lakehouse en environnement académique ou professionnel.
+
+---
+
+README généré à l'aide de ChatGPT

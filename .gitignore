@@ -5,4 +5,6 @@
 *.tfvars
 crash.log
 terraform.tfplan
-0. Purge.dbc
+.DS_Store
+
+/notebooks/0. Purge.dbc
