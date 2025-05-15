@@ -10,12 +10,12 @@ Ce dépôt contient l'automatisation complète de l'infrastructure pour un proje
 - Provisionnement d'un Azure Databricks Workspace avec managed resource group
 - Génération d'outputs Terraform réutilisables dans les scripts
 - Stockage des notebooks `.dbc` versionnés dans le dossier `/notebooks/` :
-  - `1. Initialisation.dbc`
-  - `2. Bronze layer – Ingestion.dbc`
+  - `1.0 Initialisation.dbc`
+  - `2.0 Bronze layer – Ingestion.dbc`
   - `2.5 Bronze layer – Test.dbc`
-  - `3. Silver layer – Transformation.dbc`
+  - `3.0 Silver layer – Transformation.dbc`
   - `3.5 Silver layer – Test.dbc`
-  - `4. Gold layer – Aggregation.dbc`
+  - `4.0 Gold layer – Aggregation.dbc`
 
 ## 🚀 Déploiement en 3 étapes
 
@@ -98,20 +98,24 @@ python post_deploy.py
 
 ```
 infra-azure-lakehouse/
-├── main.tf                  # Déploiement de l'infrastructure Azure
-├── variables.tf             # Variables globales
-├── outputs.tf               # Infos extraites automatiquement
-├── secrets.auto.tfvars      # ⚠️ Fichier local, non versionné
-├── terraform.tfvars         # Valeurs des noms de ressources
-├── notebooks/               # Notebooks Databricks (.dbc)
-│   ├── 1. Initialisation.dbc
-│   ├── 2. Bronze layer – Ingestion.dbc
+├── main.tf                     # Déploiement de l'infrastructure Azure
+├── variables.tf                # Variables globales
+├── outputs.tf                  # Infos extraites automatiquement
+├── secrets.auto.tfvars         # ⚠️ Fichier local, non versionné
+├── terraform.tfvars            # Valeurs des noms de ressources
+├── notebooks/                  # Notebooks Databricks (.dbc)
+│   ├── 1.0 Initialisation.dbc
+│   ├── 2.0 Bronze layer – Ingestion.dbc
 │   ├── 2.5 Bronze layer – Test.dbc
-│   ├── 3. Silver layer – Transformation.dbc
+│   ├── 3.0 Silver layer – Transformation.dbc
 │   ├── 3.5 Silver layer – Test.dbc
-│   └── 4. Gold layer – Aggregation.dbc
-├── post_deploy.py           # Script Python de post-déploiement
-├── README.md                # Ce fichier
+│   └── 4.0 Gold layer – Aggregation.dbc
+├── post_deploy.py              # Script Python de post-déploiement
+├── alteration_donee_source.sql # Code SQL d'altération de la base de données source pour tester la couche silver
+├── rollback_donee_source.sql   # Code SQL remise par défaut de la base de données source
+├── gold_ddl_diagram.md         # Diagram DDL de la couche gold en mermaid
+├── gold_ddl_diagram.svg        # Export svg du Diagram DDL de la couche gold
+├── README.md                   # Ce fichier
 ```
 
 ## 💬 Notes
