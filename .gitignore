@@ -6,5 +6,6 @@
 crash.log
 terraform.tfplan
 .DS_Store
-
-/notebooks/0. Purge.dbc
+*.mmd
+/notebooks/0.0 Purge.dbc
+/notebooks/4.1 Config Gold.dbc
