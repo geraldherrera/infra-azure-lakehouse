@@ -9,13 +9,13 @@ Ce dépôt contient l'automatisation complète de l'infrastructure pour un proje
 - Création d'un Azure Key Vault contenant les identifiants SQL
 - Provisionnement d'un Azure Databricks Workspace avec managed resource group
 - Génération d'outputs Terraform réutilisables dans les scripts
-- Stockage des notebooks `.dbc` versionnés dans le dossier `/notebooks/` :
-  - `1.0 Initialisation.dbc`
-  - `2.0 Bronze layer – Ingestion.dbc`
-  - `2.5 Bronze layer – Test.dbc`
-  - `3.0 Silver layer – Transformation.dbc`
-  - `3.5 Silver layer – Test.dbc`
-  - `4.0 Gold layer – Aggregation.dbc`
+- Stockage des notebooks `.ipynb` versionnés dans le dossier `/notebooks/` :
+  - `1.0_initialisation.ipynb`
+  - `2.0_bronze_layer_ingestion.ipynb`
+  - `2.5_bronze_layer_test.ipynb`
+  - `3.0_silver_layer_transformation.ipynb`
+  - `3.5_silver_layer_test.ipynb`
+  - `4.0_gold_layer_aggregation.ipynb`
 
 ## 🚀 Déploiement en 3 étapes
 
@@ -85,7 +85,7 @@ databricks secrets create-scope \
 Le script `post_deploy.py` effectue les actions suivantes :
 - Crée la cluster policy "Personal Policy - GHE"
 - Crée un cluster "Personal Compute - Gerald Herrera"
-- Importe les notebooks `.dbc` dans Databricks
+- Importe les notebooks `.ipynb` dans Databricks
 - Exécute automatiquement le notebook `1. Initialisation`
 
 ```bash
@@ -103,13 +103,13 @@ infra-azure-lakehouse/
 ├── outputs.tf                  # Infos extraites automatiquement
 ├── secrets.auto.tfvars         # ⚠️ Fichier local, non versionné
 ├── terraform.tfvars            # Valeurs des noms de ressources
-├── notebooks/                  # Notebooks Databricks (.dbc)
-│   ├── 1.0 Initialisation.dbc
-│   ├── 2.0 Bronze layer – Ingestion.dbc
-│   ├── 2.5 Bronze layer – Test.dbc
-│   ├── 3.0 Silver layer – Transformation.dbc
-│   ├── 3.5 Silver layer – Test.dbc
-│   └── 4.0 Gold layer – Aggregation.dbc
+├── notebooks/                  # Notebooks Databricks (.ipynb)
+│   ├── 1.0_initialisation.ipynb
+│   ├── 2.0_bronze_layer_ingestion.ipynb
+│   ├── 2.5_bronze_layer_test.ipynb
+│   ├── 3.0_silver_layer_transformation.ipynb
+│   ├── 3.5_silver_layer_test.ipynb
+│   └── 4.0_gold_layer_aggregation.ipynb
 ├── post_deploy.py              # Script Python de post-déploiement
 ├── alteration_donee_source.sql # Code SQL d'altération de la base de données source pour tester la couche silver
 ├── rollback_donee_source.sql   # Code SQL remise par défaut de la base de données source

@@ -13,7 +13,7 @@ from base64 import b64encode
 
 NOTEBOOKS_DIR = "./notebooks"
 DATABRICKS_NOTEBOOK_FOLDER = "/Workspace/Users/gerald.herrera@he-arc.ch"
-NOTEBOOK_TO_RUN = "1. Initialisation"
+NOTEBOOK_TO_RUN = "1.0 Initialisation"
 
 CLUSTER_NAME = "Personal Compute - Gerald Herrera"
 POLICY_NAME = "Personal Policy - GHE"
@@ -173,25 +173,25 @@ def ensure_cluster(client, policy_id):
     })
     return cluster["cluster_id"]
 
-def import_dbc_files(client, folder=DATABRICKS_NOTEBOOK_FOLDER):
+def import_ipynb_files(client, folder=DATABRICKS_NOTEBOOK_FOLDER):
     """
-    Importe les fichiers .dbc dans le workspace Databricks.
+    Importe les fichiers .ipynb dans le workspace Databricks.
 
     Paramètres:
         client (function): Fonction pour effectuer des appels API à Databricks.
         folder (str): Chemin du dossier cible dans le workspace Databricks.
     """
-    print(f"Import des fichiers DBC depuis {NOTEBOOKS_DIR} vers {folder}")
+    print(f"Import des fichiers ipynb depuis {NOTEBOOKS_DIR} vers {folder}")
     for file in os.listdir(NOTEBOOKS_DIR):
-        if file.endswith(".dbc"):
+        if file.endswith(".ipynb"):
             filepath = os.path.join(NOTEBOOKS_DIR, file)
             print(f"Import de {file}")
             with open(filepath, "rb") as f:
                 data = f.read()
             encoded = b64encode(data).decode("utf-8")
             client("post", "/workspace/import", json={
-                "path": f"{folder}/{file.replace('.dbc', '')}",
-                "format": "DBC",
+                "path": f"{folder}/{file.replace('.ipynb', '')}",
+                "format": "ipynb",
                 "content": encoded
             })
 
@@ -246,5 +246,5 @@ if __name__ == "__main__":
 
     policy_id = ensure_cluster_policy(client)
     cluster_id = ensure_cluster(client, policy_id)
-    import_dbc_files(client)
+    import_ipynb_files(client)
     run_notebook_and_wait(client, f"{DATABRICKS_NOTEBOOK_FOLDER}/{NOTEBOOK_TO_RUN}", cluster_id)
