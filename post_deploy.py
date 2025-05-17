@@ -175,7 +175,7 @@ def ensure_cluster(client, policy_id):
 
 def import_ipynb_files(client, folder=DATABRICKS_NOTEBOOK_FOLDER):
     """
-    Importe les fichiers .ipynb dans le workspace Databricks.
+    Importe les fichiers .ipynb (Jupyter) dans le workspace Databricks.
 
     Paramètres:
         client (function): Fonction pour effectuer des appels API à Databricks.
@@ -186,12 +186,15 @@ def import_ipynb_files(client, folder=DATABRICKS_NOTEBOOK_FOLDER):
         if file.endswith(".ipynb"):
             filepath = os.path.join(NOTEBOOKS_DIR, file)
             print(f"Import de {file}")
-            with open(filepath, "rb") as f:
-                data = f.read()
-            encoded = b64encode(data).decode("utf-8")
+            with open(filepath, "r", encoding="utf-8") as f:
+                content = f.read()
+
+            encoded = b64encode(content.encode("utf-8")).decode("utf-8")
+
             client("post", "/workspace/import", json={
                 "path": f"{folder}/{file.replace('.ipynb', '')}",
-                "format": "ipynb",
+                "format": "JUPYTER",
+                "language": "PYTHON",
                 "content": encoded
             })
 
