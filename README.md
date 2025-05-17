@@ -134,7 +134,7 @@ Ce warehouse peut être utilisé immédiatement depuis Power BI en tant que sour
 
 Pour se connecter, utilisez le connecteur Databricks dans Power BI et sélectionnez l'entrepôt "Serverless SQL" comme cible.
 
-🖍️ Tableau de bord Power BI
+## 🖍️ Tableau de bord Power BI
 
 Le fichier business_sales_dashboard.pbix est un tableau de bord interactif Power BI fournissant une vue d’ensemble complète des ventes, des produits, des clients et des opérations commerciales.
 
